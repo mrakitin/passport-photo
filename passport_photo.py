@@ -22,7 +22,7 @@ start_left = 300
 start_top = 200
 
 tick_len = 30
-tick_color = 200  # gray
+tick_color = 0  # gray=200, black=0
 
 offset = 5
 
