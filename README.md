@@ -1,1 +1,1 @@
-# passport-photo
+# Passport photo preparation tool
