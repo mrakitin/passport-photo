@@ -6,7 +6,7 @@ Requires a processed photo of size 600x600 px.
 
 | Original image: | Resulted image:      |
 |-----------------|----------------------|
-| <img src="photo.jpg" style="border-style:dotted;" width="100"> | <img src="photo_6x4in.jpg" width="200"> |
+| <img src="photo.jpg" width="100"> | <img src="photo_6x4in.jpg" width="200"> |
 
 
 
