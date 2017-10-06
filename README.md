@@ -4,6 +4,11 @@ The script generates a vertical 6x4" image file with two photos in it from the p
 
 Requires a processed photo of size 600x600 px.
 
+| Original image: | Resulted image:      |
+|-----------------|----------------------|
+| <img src="photo.jpg" style="border-style:dotted;" width="100"> | <img src="photo_6x4in.jpg" width="200"> |
+
+
 
 ## Steps to create a passport photo from scratch:
 1. Take a picture of a person with a white background. Use flash and good lighting.
