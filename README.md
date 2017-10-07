@@ -1,6 +1,6 @@
 # Passport photo preparation tool
 
-The script generates a vertical 6x4" image file with two photos in it from the provided file with tick guides to allow easier cutting of the printed photo
+The script generates a vertical 6x4" image file with two 2x2" photos in it from the provided file with tick guides to allow easier cutting of the printed photo
 
 Requires a processed photo of size 600x600 px.
 
