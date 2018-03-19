@@ -15,7 +15,7 @@ import numpy as np
 from PIL import Image
 
 
-def passport_photo(input_name, output_name=None, background_color=255, canvas_size=(1800, 1200),
+def passport_photo(input_name1, input_name2, output_name=None, background_color=255, canvas_size=(1800, 1200),
                    start_left=300, start_top=200, tick_color=0, tick_len=30, offset=5,
                    output_format='JPEG', dpi=(300, 300), subsampling=0, quality=100):
     """The function creates a vertical 6x4" image file with two photos in it from the provided file with tick guides
@@ -37,23 +37,24 @@ def passport_photo(input_name, output_name=None, background_color=255, canvas_si
     :return: the output name of the file.
     """
 
-    if not input_name:
+    if not input_name1:
         raise ValueError('Provide input file name')
 
-    if not os.path.isfile(input_name):
-        raise FileNotFoundError('The file "{}" cannot be found'.format(input_name))
+    if not os.path.isfile(input_name1):
+        raise FileNotFoundError('The file "{}" cannot be found'.format(input_name1))
 
     if not output_name:
-        output_name = '{}_6x4in{}'.format(*os.path.splitext(os.path.basename(input_name)))
+        output_name = '{}_6x4in{}'.format(*os.path.splitext(os.path.basename(input_name1)))
 
     format_codes = {
         'JPEG': 'RGB',
     }
 
     data = np.ones(canvas_size, dtype=np.uint32) * background_color
-    photo = Image.open(input_name)
+    photo1 = Image.open(input_name1)
+    photo2 = Image.open(input_name2)
 
-    photo_dim = photo.size
+    photo_dim = photo1.size
     required_dim = (600, 600)
     assert photo_dim == required_dim, 'Photo dimensions should be {}'.format(required_dim)
 
@@ -62,13 +63,13 @@ def passport_photo(input_name, output_name=None, background_color=255, canvas_si
     for start_top in start_tops:
         # Vertical ticks:
         data[start_top - tick_len - offset: start_top - offset,
-        start_left] = tick_color
+             start_left] = tick_color
         data[start_top - tick_len - offset: start_top - offset,
-        start_left + photo_dim[1]] = tick_color
+             start_left + photo_dim[1]] = tick_color
         data[(start_top + photo_dim[0]) + offset: (start_top + photo_dim[0]) + offset + tick_len,
-        start_left] = tick_color
+             start_left] = tick_color
         data[(start_top + photo_dim[0]) + offset: (start_top + photo_dim[0]) + offset + tick_len,
-        start_left + photo_dim[1]] = tick_color
+             start_left + photo_dim[1]] = tick_color
 
         # Horizontal ticks:
         data[start_top,
@@ -82,7 +83,7 @@ def passport_photo(input_name, output_name=None, background_color=255, canvas_si
 
     image = Image.fromarray(data)
     image = image.convert(format_codes[output_format])
-    for s in start_tops:
+    for s, photo in zip(start_tops, [photo1, photo2]):
         image.paste(photo, (start_left, s))
     image.save(output_name, dpi=dpi, format=output_format, subsampling=subsampling, quality=quality)
 
@@ -93,7 +94,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Passport photo preparation tool')
 
     # I/O options:
-    parser.add_argument('-i', '--input-name', dest='input_name', default=None,
+    parser.add_argument('-i', '--input-name1', dest='input_name1', default=None,
+                        help='the name of the input image file (should be of size 600x600 px)')
+    parser.add_argument('-y', '--input-name2', dest='input_name2', default=None,
                         help='the name of the input image file (should be of size 600x600 px)')
     parser.add_argument('-o', '--output-name', dest='output_name', default=None, help='the name of output image file')
 
@@ -123,7 +126,7 @@ if __name__ == '__main__':
 
     kwargs = vars(args)
 
-    if not args.input_name:
+    if not args.input_name1:
         parser.error('Provide input file name')
 
     output_name = passport_photo(**kwargs)
