@@ -15,8 +15,8 @@ import numpy as np
 from PIL import Image
 
 
-def passport_photo(input_name, output_name=None, background_color=255, canvas_size=(1800, 1200),
-                   start_left=300, start_top=200, tick_color=0, tick_len=30, offset=5,
+def passport_photo(input_name, output_name=None, background_color=255, canvas_size=(1800 * 1.5, 1200 * 1.5),
+                   start_left=10, start_top=10, tick_color=0, tick_len=30, offset=5,
                    output_format='JPEG', dpi=(300, 300), subsampling=0, quality=100):
     """The function creates a vertical 6x4" image file with two photos in it from the provided file with tick guides
     to allow easier cutting of the printed photo.
@@ -59,6 +59,8 @@ def passport_photo(input_name, output_name=None, background_color=255, canvas_si
 
     start_tops = [start_top, 2 * start_top + photo_dim[0]]  # to produce 2 vertically arranged photos
 
+    start_lefts = [start_left, 2 * start_left + photo_dim[1]]
+
     for start_top in start_tops:
         # Vertical ticks:
         data[start_top - tick_len - offset: start_top - offset,
@@ -82,8 +84,9 @@ def passport_photo(input_name, output_name=None, background_color=255, canvas_si
 
     image = Image.fromarray(data)
     image = image.convert(format_codes[output_format])
-    for s in start_tops:
-        image.paste(photo, (start_left, s))
+    for start_left in start_lefts:
+        for s in start_tops:
+            image.paste(photo, (start_left, s))
     image.save(output_name, dpi=dpi, format=output_format, subsampling=subsampling, quality=quality)
 
     return output_name
@@ -100,16 +103,19 @@ if __name__ == '__main__':
     # Colors/sizes:
     parser.add_argument('-b', '--background-color', dest='background_color', default=255,
                         help='the code of the background color (0=black, 255=white)')
-    parser.add_argument('-s', '--canvas-size', dest='canvas_size', default=(1800, 1200),
+    parser.add_argument('-s', '--canvas-size', dest='canvas_size', default=(int(1800 * 1.1), int(1200 * 1.1)),
                         help='the size of canvas (in pixels); (1800, 1200) - canvas of vertical orientation 6x4"')
-    parser.add_argument('-l', '--start-left', dest='start_left', default=300,
+
+    parser.add_argument('-l', '--start-left', dest='start_left', default=40,
                         help='the horizontal position on the canvas to place the photo at (in pixels)')
-    parser.add_argument('-t', '--start-top', dest='start_top', default=200,
+
+    parser.add_argument('-t', '--start-top', dest='start_top', default=150,
                         help='the vertical position on the canvas to place the photo at  (in pixels)')
-    parser.add_argument('-c', '--tick-color', dest='tick_color', default=0,
+
+    parser.add_argument('-c', '--tick-color', dest='tick_color', default=255,
                         help='the color of the ticks (0=black, 255=white)')
     parser.add_argument('--tick-len', dest='tick_len', default=30, help='the length of the ticks (in pixels)')
-    parser.add_argument('--offset', dest='offset', default=5,
+    parser.add_argument('--offset', dest='offset', default=50,
                         help='the offset of the ticks from the corners of the inserted photo (in pixels)')
 
     # Format/quality options:
